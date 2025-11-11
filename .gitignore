@@ -24,3 +24,7 @@ Desktop.ini
 # Backup files
 *.bak
 *.backup
+-e 
+# Environment files
+*.env
+*.env.*
