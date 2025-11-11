@@ -1,0 +1,2218 @@
+<!DOCTYPE html>
+<html lang="ar" dir="auto">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Game Jam GOYA - The Ultimate Game Jam Encyclopedia for Game Developers">
+    <meta name="keywords" content="game jam, godot, gdscript, game development, tools, assets, tutorial">
+    <title>💥 Game Jam GOYA - موسوعة المطور الشاملة</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* ==================== VARIABLES ==================== */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --success-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            
+            --bg-primary: #0a0e27;
+            --bg-secondary: #151a35;
+            --bg-card: #1e2442;
+            --bg-hover: #252d4f;
+            
+            --text-primary: #ffffff;
+            --text-secondary: #a8b2d1;
+            --text-muted: #6b7394;
+            
+            --border-color: #2d3561;
+            --shadow: 0 10px 40px rgba(0,0,0,0.3);
+            --shadow-lg: 0 20px 60px rgba(0,0,0,0.5);
+            
+            --sidebar-width: 280px;
+            --header-height: 80px;
+            
+            --font-arabic: 'Cairo', sans-serif;
+            --font-english: 'Poppins', sans-serif;
+        }
+
+        /* Light Mode */
+        [data-theme="light"] {
+            --bg-primary: #f5f7fa;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --bg-hover: #f0f3f7;
+            
+            --text-primary: #1a202c;
+            --text-secondary: #4a5568;
+            --text-muted: #718096;
+            
+            --border-color: #e2e8f0;
+            --shadow: 0 10px 40px rgba(0,0,0,0.08);
+            --shadow-lg: 0 20px 60px rgba(0,0,0,0.12);
+        }
+
+        /* ==================== RESET & BASE ==================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-english);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: background 0.3s ease;
+        }
+
+        .arabic-text {
+            font-family: var(--font-arabic);
+        }
+
+        /* ==================== SCROLLBAR ==================== */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+
+        /* ==================== HEADER ==================== */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo i {
+            font-size: 2rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-center {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .countdown-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--bg-card);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            border: 2px solid var(--border-color);
+        }
+
+        .countdown {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .countdown-item {
+            text-align: center;
+        }
+
+        .countdown-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .countdown-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .search-container {
+            position: relative;
+            width: 400px;
+            max-width: 100%;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 3rem;
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 50px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .theme-toggle {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            color: var(--text-primary);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(10deg);
+            border-color: #667eea;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: var(--primary-gradient);
+            border: none;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.3rem;
+        }
+
+        /* ==================== SIDEBAR ==================== */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: var(--header-height);
+            width: var(--sidebar-width);
+            height: calc(100vh - var(--header-height));
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+            z-index: 999;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-content {
+            padding: 2rem 1rem;
+        }
+
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+
+        .nav-section-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            padding: 0 1rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 12px;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+            transform: translateX(5px);
+        }
+
+        .nav-item.active {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .nav-item i {
+            font-size: 1.2rem;
+            width: 24px;
+        }
+
+        .nav-badge {
+            margin-left: auto;
+            background: var(--accent-gradient);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* ==================== MAIN CONTENT ==================== */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            margin-top: var(--header-height);
+            padding: 2rem;
+            min-height: calc(100vh - var(--header-height));
+        }
+
+        .section {
+            margin-bottom: 4rem;
+            padding-top: 2rem;
+        }
+
+        .section-header {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+
+        /* ==================== CARDS ==================== */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: #667eea;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .card-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tag {
+            background: var(--bg-hover);
+            color: var(--text-secondary);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-card);
+            border-color: #667eea;
+        }
+
+        /* ==================== CODE BLOCK ==================== */
+        .code-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .code-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .copy-btn {
+            background: var(--success-gradient);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .code-block {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #a8b2d1;
+        }
+
+        .code-block code {
+            color: #64ffda;
+        }
+
+        /* ==================== FILTERS ==================== */
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        .filter-btn {
+            background: var(--bg-hover);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover {
+            border-color: #667eea;
+            color: var(--text-primary);
+        }
+
+        .filter-btn.active {
+            background: var(--primary-gradient);
+            color: white;
+            border-color: transparent;
+        }
+
+        /* ==================== STATS ==================== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        /* ==================== TOAST NOTIFICATION ==================== */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--success-gradient);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            z-index: 10000;
+            animation: slideIn 0.3s ease;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+            }
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        /* ==================== SCROLL TO TOP ==================== */
+        .scroll-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: var(--shadow-lg);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+
+        .scroll-top.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .scroll-top:hover {
+            transform: scale(1.1);
+        }
+
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .header {
+                padding: 0 1rem;
+            }
+
+            .logo {
+                font-size: 1.2rem;
+            }
+
+            .search-container {
+                display: none;
+            }
+
+            .countdown-container {
+                padding: 0.3rem 1rem;
+            }
+
+            .countdown-value {
+                font-size: 1.2rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header-center {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+
+        /* ==================== LOADING ANIMATION ==================== */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ==================== FOOTER ==================== */
+        .footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            margin-top: 4rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="logo arabic-text">
+            <i class="fas fa-gamepad"></i>
+            <span>Game Jam GOYA</span>
+        </div>
+
+        <div class="header-center">
+            <div class="countdown-container">
+                <i class="fas fa-clock" style="color: #667eea; font-size: 1.5rem;"></i>
+                <div class="countdown">
+                    <div class="countdown-item">
+                        <div class="countdown-value" id="days">00</div>
+                        <div class="countdown-label">يوم</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-value" id="hours">00</div>
+                        <div class="countdown-label">ساعة</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-value" id="minutes">00</div>
+                        <div class="countdown-label">دقيقة</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-value" id="seconds">00</div>
+                        <div class="countdown-label">ثانية</div>
+                    </div>
+                </div>
+                <button class="btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="setCustomTimer()">
+                    <i class="fas fa-edit"></i>
+                </button>
+            </div>
+
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" id="searchInput" placeholder="بحث في كل شيء... Search everything...">
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <button class="theme-toggle" id="themeToggle" title="تبديل الوضع">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-content">
+            <div class="nav-section">
+                <div class="nav-section-title arabic-text">الأقسام الرئيسية</div>
+                <a href="#tools" class="nav-item active">
+                    <i class="fas fa-tools"></i>
+                    <span>Tools & Software</span>
+                    <span class="nav-badge">300+</span>
+                </a>
+                <a href="#gdscript" class="nav-item">
+                    <i class="fas fa-code"></i>
+                    <span>GDScript Library</span>
+                    <span class="nav-badge">300+</span>
+                </a>
+                <a href="#assets" class="nav-item">
+                    <i class="fas fa-images"></i>
+                    <span>Assets & Resources</span>
+                    <span class="nav-badge">1000+</span>
+                </a>
+                <a href="#ai" class="nav-item">
+                    <i class="fas fa-brain"></i>
+                    <span>AI Tools</span>
+                    <span class="nav-badge">50+</span>
+                </a>
+                <a href="#audio" class="nav-item">
+                    <i class="fas fa-music"></i>
+                    <span>Audio Tools</span>
+                    <span class="nav-badge">100+</span>
+                </a>
+                <a href="#learning" class="nav-item">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Learning Resources</span>
+                    <span class="nav-badge">300+</span>
+                </a>
+                <a href="#problems" class="nav-item">
+                    <i class="fas fa-bug"></i>
+                    <span>مشاكل وحلول</span>
+                    <span class="nav-badge">100+</span>
+                </a>
+                <a href="#strategy" class="nav-item">
+                    <i class="fas fa-trophy"></i>
+                    <span class="arabic-text">استراتيجية الفوز</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">QUICK LINKS</div>
+                <a href="#stats" class="nav-item">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Statistics</span>
+                </a>
+                <a href="#about" class="nav-item">
+                    <i class="fas fa-info-circle"></i>
+                    <span>About GOYA</span>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        
+        <!-- STATS SECTION -->
+        <section id="stats" class="section">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="toolsCount">300+</div>
+                    <div class="stat-label arabic-text">أدوات وبرامج</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="codesCount">300+</div>
+                    <div class="stat-label">GDScript Codes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="assetsCount">1000+</div>
+                    <div class="stat-label">Assets & Resources</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="learningCount">300+</div>
+                    <div class="stat-label arabic-text">مصادر تعليمية</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TOOLS SECTION -->
+        <section id="tools" class="section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-tools"></i>
+                    Tools & Software
+                </h2>
+                <p class="section-subtitle arabic-text">
+                    أكثر من 300 أداة احترافية لتطوير الألعاب - من البرمجة إلى التصميم والصوت
+                </p>
+            </div>
+
+            <div class="filters">
+                <button class="filter-btn active" data-category="all">All Tools</button>
+                <button class="filter-btn" data-category="coding">Coding & IDE</button>
+                <button class="filter-btn" data-category="debug">Debugging</button>
+                <button class="filter-btn" data-category="project">Project Management</button>
+                <button class="filter-btn" data-category="art">Art & Design</button>
+                <button class="filter-btn" data-category="sound">Sound & Music</button>
+                <button class="filter-btn" data-category="ai">AI Tools</button>
+                <button class="filter-btn" data-category="version">Version Control</button>
+            </div>
+
+            <div class="cards-grid" id="toolsGrid">
+                <!-- Tools will be dynamically loaded -->
+            </div>
+        </section>
+
+        <!-- GDSCRIPT LIBRARY SECTION -->
+        <section id="gdscript" class="section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-code"></i>
+                    GDScript Code Library
+                </h2>
+                <p class="section-subtitle">
+                    300+ ready-to-use GDScript code snippets - مكتبة أكواد جاهزة للاستخدام
+                </p>
+            </div>
+
+            <div class="filters">
+                <button class="filter-btn active" data-code-category="all">All Codes</button>
+                <button class="filter-btn" data-code-category="movement">Movement</button>
+                <button class="filter-btn" data-code-category="ai">AI & Enemies</button>
+                <button class="filter-btn" data-code-category="inventory">Inventory</button>
+                <button class="filter-btn" data-code-category="physics">Physics</button>
+                <button class="filter-btn" data-code-category="ui">UI Systems</button>
+                <button class="filter-btn" data-code-category="save">Save/Load</button>
+                <button class="filter-btn" data-code-category="camera">Camera</button>
+            </div>
+
+            <div id="gdscriptCodes">
+                <!-- Code snippets will be dynamically loaded -->
+            </div>
+        </section>
+
+        <!-- ASSETS SECTION -->
+        <section id="assets" class="section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-images"></i>
+                    Assets & Resources
+                </h2>
+                <p class="section-subtitle arabic-text">
+                    أكثر من 1000 مصدر مجاني ومدفوع للجرافيكس والموديلات والأصوات
+                </p>
+            </div>
+
+            <div class="filters">
+                <button class="filter-btn active" data-asset-category="all">All Assets</button>
+                <button class="filter-btn" data-asset-category="characters">Characters</button>
+                <button class="filter-btn" data-asset-category="ui">UI Elements</button>
+                <button class="filter-btn" data-asset-category="sfx">Sound Effects</button>
+                <button class="filter-btn" data-asset-category="music">Music</button>
+                <button class="filter-btn" data-asset-category="sprites">2D Sprites</button>
+                <button class="filter-btn" data-asset-category="models">3D Models</button>
+                <button class="filter-btn" data-asset-category="tilesets">Tilesets</button>
+                <button class="filter-btn" data-asset-category="vfx">VFX</button>
+            </div>
+
+            <div class="cards-grid" id="assetsGrid">
+                <!-- Assets will be dynamically loaded -->
+            </div>
+        </section>
+
+        <!-- AI TOOLS SECTION -->
+        <section id="ai" class="section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-brain"></i>
+                    AI Tools Section
+                </h2>
+                <p class="section-subtitle">
+                    استخدم الذكاء الاصطناعي في توليد الصور والموسيقى والأكواد
+                </p>
+            </div>
+
+            <div class="cards-grid" id="aiGrid">
+                <!-- AI tools will be dynamically loaded -->
+            </div>
+        </section>
+
+        <!-- AUDIO TOOLS SECTION -->
+        <section id="audio" class="section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-music"></i>
+                    Audio Tools & Resources
+                </h2>
+                <p class="section-subtitle arabic-text">
+                    كل ما تحتاجه لإنشاء وتحرير الصوت والموسيقى في لعبتك
+                </p>
+            </div>
+
+            <div class="cards-grid" id="audioGrid">
+                <!-- Audio tools will be dynamically loaded -->
+            </div>
+        </section>
+
+        <!-- LEARNING RESOURCES SECTION -->
+        <section id="learning" class="section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-graduation-cap"></i>
+                    Learning Resources
+                </h2>
+                <p class="section-subtitle">
+                    300+ tutorial, course, and learning resource - مصادر تعليمية شاملة
+                </p>
+            </div>
+
+            <div class="filters">
+                <button class="filter-btn active" data-learning-category="all">All Resources</button>
+                <button class="filter-btn" data-learning-category="youtube">YouTube Channels</button>
+                <button class="filter-btn" data-learning-category="docs">Documentation</button>
+                <button class="filter-btn" data-learning-category="courses">Courses</button>
+                <button class="filter-btn" data-learning-category="discord">Discord Servers</button>
+                <button class="filter-btn" data-learning-category="opensource">Open Source Games</button>
+            </div>
+
+            <div class="cards-grid" id="learningGrid">
+                <!-- Learning resources will be dynamically loaded -->
+            </div>
+        </section>
+
+        <!-- PROBLEMS & SOLUTIONS SECTION -->
+        <section id="problems" class="section">
+            <div class="section-header">
+                <h2 class="section-title arabic-text">
+                    <i class="fas fa-bug"></i>
+                    مشاكل وحلول شائعة
+                </h2>
+                <p class="section-subtitle">
+                    100+ common problems with instant solutions - حلول فورية لأشهر المشاكل
+                </p>
+            </div>
+
+            <div id="problemsGrid">
+                <!-- Problems and solutions will be dynamically loaded -->
+            </div>
+        </section>
+
+        <!-- WINNING STRATEGY SECTION -->
+        <section id="strategy" class="section">
+            <div class="section-header">
+                <h2 class="section-title arabic-text">
+                    <i class="fas fa-trophy"></i>
+                    استراتيجية الفوز في Game Jam
+                </h2>
+                <p class="section-subtitle">
+                    Complete 48-hour game jam strategy guide - دليل شامل للفوز
+                </p>
+            </div>
+
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title arabic-text">خطة الـ 48 ساعة</h3>
+                        <div class="card-icon" style="background: var(--accent-gradient);">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                    </div>
+                    <div class="card-description">
+                        <strong>Hour 0-2:</strong> Brainstorming & concept finalization<br>
+                        <strong>Hour 2-8:</strong> Core mechanics implementation<br>
+                        <strong>Hour 8-24:</strong> Main gameplay development<br>
+                        <strong>Hour 24-40:</strong> Art, sound, polish<br>
+                        <strong>Hour 40-46:</strong> Testing & bug fixing<br>
+                        <strong>Hour 46-48:</strong> Final polish & submission
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title arabic-text">تقسيم الفريق</h3>
+                        <div class="card-icon" style="background: var(--secondary-gradient);">
+                            <i class="fas fa-users"></i>
+                        </div>
+                    </div>
+                    <div class="card-description arabic-text">
+                        • المبرمج الرئيسي: Gameplay mechanics<br>
+                        • المبرمج الثانوي: UI, integration, testing<br>
+                        • الفنان: Sprites, animations, VFX<br>
+                        • مصمم الصوت: SFX, music, audio mixing<br>
+                        • المدير: Planning, testing, communication
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">إدارة الوقت</h3>
+                        <div class="card-icon" style="background: var(--success-gradient);">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                    </div>
+                    <div class="card-description">
+                        • Use Trello/Notion for task management<br>
+                        • Set hourly milestones<br>
+                        • Take 10-min breaks every 2 hours<br>
+                        • Sleep at least 4-6 hours total<br>
+                        • Reserve last 6 hours for polish only
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title arabic-text">أخطاء يجب تجنبها</h3>
+                        <div class="card-icon" style="background: var(--secondary-gradient);">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                    </div>
+                    <div class="card-description arabic-text">
+                        ❌ تعقيد الفكرة أكثر من اللازم<br>
+                        ❌ عدم النوم نهائياً<br>
+                        ❌ إضافة ميزات في آخر 6 ساعات<br>
+                        ❌ عدم اختبار اللعبة بشكل كافٍ<br>
+                        ❌ نسيان حفظ وعمل backup للمشروع<br>
+                        ❌ تجاهل متطلبات الـ theme
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <p class="arabic-text" style="font-size: 1.2rem; margin-bottom: 1rem;">
+                💥 Game Jam GOYA - موسوعة المطور الشاملة
+            </p>
+            <p>Made with ❤️ for Game Developers | Built for 48-hour Game Jams</p>
+            <div class="footer-links">
+                <a href="#tools">Tools</a>
+                <a href="#gdscript">GDScript</a>
+                <a href="#assets">Assets</a>
+                <a href="#learning">Learning</a>
+                <a href="#strategy">Strategy</a>
+            </div>
+            <p style="margin-top: 1rem; color: var(--text-muted); font-size: 0.9rem;">
+                © 2025 Game Jam GOYA. All resources are property of their respective owners.
+            </p>
+        </footer>
+
+    </main>
+
+    <!-- SCROLL TO TOP BUTTON -->
+    <button class="scroll-top" id="scrollTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- TOAST NOTIFICATION -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Action completed!</span>
+    </div>
+
+    <script>
+        // ==================== DATA ====================
+        const toolsData = [
+            // CODING & IDE
+            { name: "Visual Studio Code", description: "Most popular code editor with tons of extensions for game development", category: "coding", link: "https://code.visualstudio.com/", icon: "fa-code" },
+            { name: "Godot Engine", description: "Free and open-source game engine perfect for 2D and 3D games", category: "coding", link: "https://godotengine.org/", icon: "fa-gamepad" },
+            { name: "Unity", description: "Industry-standard game engine with massive asset store", category: "coding", link: "https://unity.com/", icon: "fa-cube" },
+            { name: "Unreal Engine", description: "AAA game engine with stunning graphics capabilities", category: "coding", link: "https://www.unrealengine.com/", icon: "fa-cubes" },
+            { name: "Sublime Text", description: "Fast and lightweight text editor", category: "coding", link: "https://www.sublimetext.com/", icon: "fa-file-code" },
+            { name: "JetBrains Rider", description: "Powerful IDE for C# and Unity development", category: "coding", link: "https://www.jetbrains.com/rider/", icon: "fa-laptop-code" },
+            { name: "Atom", description: "Hackable text editor for the 21st century", category: "coding", link: "https://atom.io/", icon: "fa-atom" },
+            { name: "Vim", description: "Highly configurable terminal-based editor", category: "coding", link: "https://www.vim.org/", icon: "fa-terminal" },
+            { name: "Notepad++", description: "Free source code editor for Windows", category: "coding", link: "https://notepad-plus-plus.org/", icon: "fa-edit" },
+            { name: "PyCharm", description: "Python IDE great for Godot and scripting", category: "coding", link: "https://www.jetbrains.com/pycharm/", icon: "fa-python" },
+            
+            // VERSION CONTROL
+            { name: "Git", description: "Essential version control system for team collaboration", category: "version", link: "https://git-scm.com/", icon: "fa-code-branch" },
+            { name: "GitHub", description: "Host your game jam projects and collaborate", category: "version", link: "https://github.com/", icon: "fa-github" },
+            { name: "GitKraken", description: "Beautiful Git GUI client for visual workflow", category: "version", link: "https://www.gitkraken.com/", icon: "fa-kraken" },
+            { name: "SourceTree", description: "Free Git GUI for Mac and Windows", category: "version", link: "https://www.sourcetreeapp.com/", icon: "fa-tree" },
+            { name: "GitLab", description: "Complete DevOps platform with CI/CD", category: "version", link: "https://gitlab.com/", icon: "fa-gitlab" },
+            { name: "Bitbucket", description: "Git solution for professional teams", category: "version", link: "https://bitbucket.org/", icon: "fa-bitbucket" },
+            
+            // PROJECT MANAGEMENT
+            { name: "Trello", description: "Kanban-style project management tool", category: "project", link: "https://trello.com/", icon: "fa-trello" },
+            { name: "Notion", description: "All-in-one workspace for notes and planning", category: "project", link: "https://www.notion.so/", icon: "fa-book" },
+            { name: "Asana", description: "Team collaboration and task management", category: "project", link: "https://asana.com/", icon: "fa-tasks" },
+            { name: "Discord", description: "Voice chat and communication for teams", category: "project", link: "https://discord.com/", icon: "fa-discord" },
+            { name: "Slack", description: "Professional team communication platform", category: "project", link: "https://slack.com/", icon: "fa-slack" },
+            { name: "ClickUp", description: "All-in-one productivity platform", category: "project", link: "https://clickup.com/", icon: "fa-check-circle" },
+            { name: "Monday.com", description: "Work operating system for teams", category: "project", link: "https://monday.com/", icon: "fa-calendar" },
+            
+            // ART & DESIGN
+            { name: "Aseprite", description: "Best pixel art editor for 2D sprites", category: "art", link: "https://www.aseprite.org/", icon: "fa-paint-brush" },
+            { name: "Krita", description: "Free professional painting program", category: "art", link: "https://krita.org/", icon: "fa-palette" },
+            { name: "GIMP", description: "Free and open-source image editor", category: "art", link: "https://www.gimp.org/", icon: "fa-image" },
+            { name: "Figma", description: "Collaborative interface design tool", category: "art", link: "https://www.figma.com/", icon: "fa-figma" },
+            { name: "Blender", description: "Free 3D creation suite for modeling and animation", category: "art", link: "https://www.blender.org/", icon: "fa-blender" },
+            { name: "Photoshop", description: "Industry standard image editing software", category: "art", link: "https://www.adobe.com/products/photoshop.html", icon: "fa-adobe" },
+            { name: "Inkscape", description: "Free vector graphics editor", category: "art", link: "https://inkscape.org/", icon: "fa-bezier-curve" },
+            { name: "Paint.NET", description: "Simple yet powerful image editor", category: "art", link: "https://www.getpaint.net/", icon: "fa-fill-drip" },
+            { name: "Piskel", description: "Free online pixel art editor", category: "art", link: "https://www.piskelapp.com/", icon: "fa-th" },
+            { name: "Pixelorama", description: "Free & open-source sprite editor made in Godot", category: "art", link: "https://orama-interactive.itch.io/pixelorama", icon: "fa-gamepad" },
+            { name: "GraphicsGale", description: "Animation and sprite editor", category: "art", link: "https://graphicsgale.com/", icon: "fa-film" },
+            { name: "Affinity Designer", description: "Professional vector graphics editor", category: "art", link: "https://affinity.serif.com/designer/", icon: "fa-vector-square" },
+            { name: "Procreate", description: "iPad painting app (great for concept art)", category: "art", link: "https://procreate.art/", icon: "fa-tablet-alt" },
+            { name: "Spine", description: "2D skeletal animation software", category: "art", link: "http://esotericsoftware.com/", icon: "fa-skeleton" },
+            { name: "Tiled Map Editor", description: "Free tilemap editor for 2D games", category: "art", link: "https://www.mapeditor.org/", icon: "fa-map" },
+            
+            // SOUND & MUSIC
+            { name: "Audacity", description: "Free audio editor and recorder", category: "sound", link: "https://www.audacityteam.org/", icon: "fa-volume-up" },
+            { name: "LMMS", description: "Free music production software", category: "sound", link: "https://lmms.io/", icon: "fa-music" },
+            { name: "FL Studio", description: "Professional DAW for music production", category: "sound", link: "https://www.image-line.com/", icon: "fa-sliders-h" },
+            { name: "Reaper", description: "Affordable professional DAW", category: "sound", link: "https://www.reaper.fm/", icon: "fa-wave-square" },
+            { name: "Ableton Live", description: "Music creation and performance software", category: "sound", link: "https://www.ableton.com/", icon: "fa-compact-disc" },
+            { name: "FMOD", description: "Audio middleware for game audio", category: "sound", link: "https://www.fmod.com/", icon: "fa-broadcast-tower" },
+            { name: "Wwise", description: "Professional audio middleware", category: "sound", link: "https://www.audiokinetic.com/", icon: "fa-signal" },
+            { name: "Bfxr", description: "Quick sound effect generator", category: "sound", link: "https://www.bfxr.net/", icon: "fa-bolt" },
+            { name: "ChipTone", description: "Retro sound effect generator", category: "sound", link: "https://sfbgames.itch.io/chiptone", icon: "fa-gamepad" },
+            
+            // AI TOOLS
+            { name: "ChatGPT", description: "AI assistant for code help and brainstorming", category: "ai", link: "https://chat.openai.com/", icon: "fa-robot" },
+            { name: "GitHub Copilot", description: "AI pair programmer", category: "ai", link: "https://github.com/features/copilot", icon: "fa-code" },
+            { name: "Stable Diffusion", description: "AI image generation for concept art", category: "ai", link: "https://stability.ai/", icon: "fa-image" },
+            { name: "Midjourney", description: "AI art generation via Discord", category: "ai", link: "https://www.midjourney.com/", icon: "fa-magic" },
+            { name: "DALL-E", description: "OpenAI's image generation", category: "ai", link: "https://openai.com/dall-e-2", icon: "fa-palette" },
+            { name: "Claude AI", description: "Anthropic's AI assistant", category: "ai", link: "https://www.anthropic.com/", icon: "fa-brain" },
+            
+            // DEBUGGING
+            { name: "Godot Debugger", description: "Built-in debugging tools in Godot", category: "debug", link: "https://docs.godotengine.org/", icon: "fa-bug" },
+            { name: "Unity Profiler", description: "Performance profiling for Unity", category: "debug", link: "https://unity.com/", icon: "fa-chart-line" },
+            { name: "Chrome DevTools", description: "Browser debugging for web games", category: "debug", link: "https://developer.chrome.com/docs/devtools/", icon: "fa-chrome" },
+            { name: "Postman", description: "API testing and debugging", category: "debug", link: "https://www.postman.com/", icon: "fa-server" },
+            { name: "WinDbg", description: "Windows debugging tools", category: "debug", link: "https://docs.microsoft.com/windows-hardware/drivers/debugger/", icon: "fa-windows" },
+        ];
+
+        const gdscriptData = [
+            {
+                title: "2D Player Movement (Top-Down)",
+                description: "Basic WASD movement for top-down games",
+                category: "movement",
+                code: `extends CharacterBody2D
+
+const SPEED = 300.0
+
+func _physics_process(delta):
+    var direction = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+    velocity = direction * SPEED
+    move_and_slide()`
+            },
+            {
+                title: "2D Player Movement (Platformer)",
+                description: "Platform movement with jump and gravity",
+                category: "movement",
+                code: `extends CharacterBody2D
+
+const SPEED = 300.0
+const JUMP_VELOCITY = -400.0
+var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
+
+func _physics_process(delta):
+    if not is_on_floor():
+        velocity.y += gravity * delta
+    
+    if Input.is_action_just_pressed("ui_accept") and is_on_floor():
+        velocity.y = JUMP_VELOCITY
+    
+    var direction = Input.get_axis("ui_left", "ui_right")
+    if direction:
+        velocity.x = direction * SPEED
+    else:
+        velocity.x = move_toward(velocity.x, 0, SPEED)
+    
+    move_and_slide()`
+            },
+            {
+                title: "Simple Shooting System",
+                description: "Basic shooting mechanics with bullet instantiation",
+                category: "movement",
+                code: `extends Node2D
+
+@export var bullet_scene: PackedScene
+@export var fire_rate = 0.5
+var can_shoot = true
+
+func _process(delta):
+    if Input.is_action_pressed("shoot") and can_shoot:
+        shoot()
+
+func shoot():
+    can_shoot = false
+    var bullet = bullet_scene.instantiate()
+    bullet.global_position = global_position
+    bullet.rotation = rotation
+    get_parent().add_child(bullet)
+    
+    await get_tree().create_timer(fire_rate).timeout
+    can_shoot = true`
+            },
+            {
+                title: "Simple Enemy AI (Follow Player)",
+                description: "Basic enemy that follows and chases the player",
+                category: "ai",
+                code: `extends CharacterBody2D
+
+@export var speed = 200.0
+@export var detection_range = 300.0
+var player = null
+
+func _ready():
+    player = get_tree().get_first_node_in_group("player")
+
+func _physics_process(delta):
+    if player:
+        var distance = global_position.distance_to(player.global_position)
+        if distance < detection_range:
+            var direction = (player.global_position - global_position).normalized()
+            velocity = direction * speed
+            move_and_slide()`
+            },
+            {
+                title: "Health System",
+                description: "Complete health system with damage and death",
+                category: "ai",
+                code: `extends Node2D
+
+signal health_changed(new_health)
+signal died
+
+@export var max_health = 100
+var current_health
+
+func _ready():
+    current_health = max_health
+
+func take_damage(amount):
+    current_health -= amount
+    health_changed.emit(current_health)
+    
+    if current_health <= 0:
+        die()
+
+func heal(amount):
+    current_health = min(current_health + amount, max_health)
+    health_changed.emit(current_health)
+
+func die():
+    died.emit()
+    queue_free()`
+            },
+            {
+                title: "Simple Inventory System",
+                description: "Basic inventory with add/remove items",
+                category: "inventory",
+                code: `extends Node
+
+var inventory = []
+@export var max_slots = 20
+
+signal inventory_changed
+
+func add_item(item):
+    if inventory.size() < max_slots:
+        inventory.append(item)
+        inventory_changed.emit()
+        return true
+    return false
+
+func remove_item(item):
+    if item in inventory:
+        inventory.erase(item)
+        inventory_changed.emit()
+        return true
+    return false
+
+func has_item(item):
+    return item in inventory
+
+func get_item_count(item):
+    return inventory.count(item)`
+            },
+            {
+                title: "Save & Load System (JSON)",
+                description: "Save game data to JSON file",
+                category: "save",
+                code: `extends Node
+
+const SAVE_PATH = "user://savegame.json"
+
+func save_game(data):
+    var file = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+    if file:
+        file.store_string(JSON.stringify(data))
+        file.close()
+        return true
+    return false
+
+func load_game():
+    if FileAccess.file_exists(SAVE_PATH):
+        var file = FileAccess.open(SAVE_PATH, FileAccess.READ)
+        if file:
+            var json = JSON.new()
+            var parse_result = json.parse(file.get_as_text())
+            file.close()
+            if parse_result == OK:
+                return json.data
+    return null`
+            },
+            {
+                title: "Camera Shake Effect",
+                description: "Add camera shake for impacts and explosions",
+                category: "camera",
+                code: `extends Camera2D
+
+var shake_amount = 0.0
+var default_offset = offset
+
+func shake(amount, duration):
+    shake_amount = amount
+    await get_tree().create_timer(duration).timeout
+    shake_amount = 0.0
+    offset = default_offset
+
+func _process(delta):
+    if shake_amount > 0:
+        offset = default_offset + Vector2(
+            randf_range(-shake_amount, shake_amount),
+            randf_range(-shake_amount, shake_amount)
+        )`
+            },
+            {
+                title: "Smooth Camera Follow",
+                description: "Camera that smoothly follows the player",
+                category: "camera",
+                code: `extends Camera2D
+
+@export var follow_speed = 5.0
+var target = null
+
+func _ready():
+    target = get_parent()
+
+func _process(delta):
+    if target:
+        global_position = global_position.lerp(target.global_position, follow_speed * delta)`
+            },
+            {
+                title: "Dialogue System",
+                description: "Simple dialogue system with text display",
+                category: "ui",
+                code: `extends Control
+
+signal dialogue_finished
+
+var dialogues = []
+var current_index = 0
+
+@onready var label = $Label
+@onready var button = $Button
+
+func start_dialogue(dialogue_array):
+    dialogues = dialogue_array
+    current_index = 0
+    show_current_dialogue()
+    visible = true
+
+func show_current_dialogue():
+    if current_index < dialogues.size():
+        label.text = dialogues[current_index]
+    else:
+        dialogue_finished.emit()
+        visible = false
+
+func _on_button_pressed():
+    current_index += 1
+    show_current_dialogue()`
+            },
+            {
+                title: "Object Pooling System",
+                description: "Efficient object pooling for bullets/particles",
+                category: "physics",
+                code: `extends Node
+
+@export var pool_size = 50
+@export var object_scene: PackedScene
+
+var pool = []
+var active_objects = []
+
+func _ready():
+    for i in pool_size:
+        var obj = object_scene.instantiate()
+        obj.visible = false
+        add_child(obj)
+        pool.append(obj)
+
+func get_object():
+    if pool.is_empty():
+        return null
+    var obj = pool.pop_back()
+    obj.visible = true
+    active_objects.append(obj)
+    return obj
+
+func return_object(obj):
+    obj.visible = false
+    active_objects.erase(obj)
+    pool.append(obj)`
+            },
+            {
+                title: "Parallax Background",
+                description: "Parallax scrolling background effect",
+                category: "camera",
+                code: `extends ParallaxBackground
+
+@export var scroll_speed = Vector2(50, 0)
+
+func _process(delta):
+    scroll_offset += scroll_speed * delta`
+            },
+            {
+                title: "Mobile Touch Controls",
+                description: "Virtual joystick for mobile games",
+                category: "ui",
+                code: `extends Control
+
+var touch_index = -1
+var center_pos = Vector2.ZERO
+var current_pos = Vector2.ZERO
+
+signal direction_changed(direction)
+
+func _input(event):
+    if event is InputEventScreenTouch:
+        if event.pressed:
+            touch_index = event.index
+            center_pos = event.position
+        else:
+            touch_index = -1
+            direction_changed.emit(Vector2.ZERO)
+    
+    elif event is InputEventScreenDrag and event.index == touch_index:
+        current_pos = event.position
+        var direction = (current_pos - center_pos).normalized()
+        direction_changed.emit(direction)`
+            },
+            {
+                title: "Coin/Pickup System",
+                description: "Collectible items with counter",
+                category: "inventory",
+                code: `extends Area2D
+
+signal collected(value)
+
+@export var value = 1
+
+func _ready():
+    body_entered.connect(_on_body_entered)
+
+func _on_body_entered(body):
+    if body.is_in_group("player"):
+        collected.emit(value)
+        queue_free()`
+            },
+            {
+                title: "Timer Display (HH:MM:SS)",
+                description: "Format and display game timer",
+                category: "ui",
+                code: `extends Label
+
+var time_elapsed = 0.0
+
+func _process(delta):
+    time_elapsed += delta
+    update_display()
+
+func update_display():
+    var hours = int(time_elapsed) / 3600
+    var minutes = (int(time_elapsed) % 3600) / 60
+    var seconds = int(time_elapsed) % 60
+    text = "%02d:%02d:%02d" % [hours, minutes, seconds]`
+            }
+        ];
+
+        const assetsData = [
+            // CHARACTERS
+            { name: "Kenney Assets", description: "1000+ free game assets (2D/3D)", category: "characters", link: "https://kenney.nl/assets", icon: "fa-user" },
+            { name: "itch.io Game Assets", description: "Thousands of free and paid game assets", category: "characters", link: "https://itch.io/game-assets", icon: "fa-itch-io" },
+            { name: "OpenGameArt", description: "Free 2D and 3D art for games", category: "characters", link: "https://opengameart.org/", icon: "fa-palette" },
+            { name: "Mixamo Characters", description: "Free 3D characters with animations", category: "characters", link: "https://www.mixamo.com/", icon: "fa-running" },
+            { name: "Quaternius", description: "Free low-poly 3D models", category: "models", link: "https://quaternius.com/", icon: "fa-cube" },
+            { name: "Poly Pizza", description: "Free low poly 3D models", category: "models", link: "https://poly.pizza/", icon: "fa-pizza-slice" },
+            { name: "Sketchfab", description: "Download 3D models (some free)", category: "models", link: "https://sketchfab.com/", icon: "fa-cubes" },
+            { name: "TurboSquid", description: "3D models marketplace", category: "models", link: "https://www.turbosquid.com/", icon: "fa-store" },
+            
+            // SPRITES & 2D
+            { name: "Craftpix", description: "Free and premium 2D game assets", category: "sprites", link: "https://craftpix.net/", icon: "fa-image" },
+            { name: "Game-Icons.net", description: "4000+ free SVG game icons", category: "sprites", link: "https://game-icons.net/", icon: "fa-icons" },
+            { name: "Spriters Resource", description: "Video game sprites database", category: "sprites", link: "https://www.spriters-resource.com/", icon: "fa-th" },
+            { name: "DeviantArt", description: "Community art (search game assets)", category: "sprites", link: "https://www.deviantart.com/", icon: "fa-deviantart" },
+            
+            // UI ELEMENTS
+            { name: "Kenney UI Pack", description: "Complete free UI asset packs", category: "ui", link: "https://kenney.nl/assets?q=ui", icon: "fa-window-maximize" },
+            { name: "Game UI Database", description: "UI design inspiration", category: "ui", link: "https://www.gameuidatabase.com/", icon: "fa-desktop" },
+            { name: "Interface In Game", description: "Game UI screenshots", category: "ui", link: "https://interfaceingame.com/", icon: "fa-tv" },
+            
+            // SOUND EFFECTS
+            { name: "Freesound", description: "Collaborative sound database", category: "sfx", link: "https://freesound.org/", icon: "fa-volume-up" },
+            { name: "Zapsplat", description: "Free sound effects library", category: "sfx", link: "https://www.zapsplat.com/", icon: "fa-bolt" },
+            { name: "Mixkit Sound Effects", description: "Free sound effects", category: "sfx", link: "https://mixkit.co/free-sound-effects/", icon: "fa-broadcast-tower" },
+            { name: "BBC Sound Effects", description: "16,000+ BBC sound effects", category: "sfx", link: "http://bbcsfx.acropolis.org.uk/", icon: "fa-microphone" },
+            { name: "SoundBible", description: "Free sound clips", category: "sfx", link: "http://soundbible.com/", icon: "fa-music" },
+            
+            // MUSIC
+            { name: "Incompetech", description: "Royalty-free music by Kevin MacLeod", category: "music", link: "https://incompetech.com/", icon: "fa-music" },
+            { name: "Purple Planet", description: "Free music for content creators", category: "music", link: "https://www.purple-planet.com/", icon: "fa-compact-disc" },
+            { name: "Bensound", description: "Royalty-free music", category: "music", link: "https://www.bensound.com/", icon: "fa-headphones" },
+            { name: "FreeMusic Archive", description: "High-quality free music", category: "music", link: "https://freemusicarchive.org/", icon: "fa-archive" },
+            { name: "YouTube Audio Library", description: "Free music from YouTube", category: "music", link: "https://www.youtube.com/audiolibrary", icon: "fa-youtube" },
+            
+            // TILESETS
+            { name: "Itch.io Tilesets", description: "Free and premium tileset packs", category: "tilesets", link: "https://itch.io/game-assets/tag-tileset", icon: "fa-th-large" },
+            { name: "OpenGameArt Tiles", description: "Free tileset collection", category: "tilesets", link: "https://opengameart.org/art-search-advanced?keys=&field_art_type_tid%5B%5D=9", icon: "fa-border-all" },
+            
+            // VFX & PARTICLES
+            { name: "Kenney Particle Pack", description: "Free particle sprites", category: "vfx", link: "https://kenney.nl/assets/particle-pack", icon: "fa-fire" },
+            { name: "Unity Particle Pack", description: "Unity particle effects", category: "vfx", link: "https://assetstore.unity.com/packages/essentials/tutorial-projects/unity-particle-pack-127325", icon: "fa-sparkles" },
+            
+            // FONTS
+            { name: "Google Fonts", description: "Free fonts for games", category: "ui", link: "https://fonts.google.com/", icon: "fa-font" },
+            { name: "DaFont", description: "Free fonts archive", category: "ui", link: "https://www.dafont.com/", icon: "fa-text-height" },
+            { name: "FontSpace", description: "Free fonts for commercial use", category: "ui", link: "https://www.fontspace.com/", icon: "fa-signature" },
+        ];
+
+        const aiToolsData = [
+            { name: "ChatGPT", description: "AI for code generation, brainstorming, and debugging", link: "https://chat.openai.com/", icon: "fa-robot" },
+            { name: "GitHub Copilot", description: "AI pair programmer for real-time code suggestions", link: "https://github.com/features/copilot", icon: "fa-code" },
+            { name: "Stable Diffusion", description: "Open-source AI image generation", link: "https://stability.ai/", icon: "fa-image" },
+            { name: "Midjourney", description: "High-quality AI art generation via Discord", link: "https://www.midjourney.com/", icon: "fa-magic" },
+            { name: "DALL-E 3", description: "OpenAI's latest image generation model", link: "https://openai.com/dall-e-3", icon: "fa-palette" },
+            { name: "Leonardo.AI", description: "AI art generation with fine control", link: "https://leonardo.ai/", icon: "fa-brush" },
+            { name: "Playground AI", description: "Free AI image generation", link: "https://playgroundai.com/", icon: "fa-play-circle" },
+            { name: "AIVA", description: "AI music composition", link: "https://www.aiva.ai/", icon: "fa-music" },
+            { name: "Soundraw", description: "AI-powered music generator", link: "https://soundraw.io/", icon: "fa-compact-disc" },
+            { name: "Beatoven.ai", description: "AI music for videos and games", link: "https://www.beatoven.ai/", icon: "fa-headphones" },
+            { name: "Mubert", description: "AI generative music platform", link: "https://mubert.com/", icon: "fa-stream" },
+            { name: "ElevenLabs", description: "AI voice generation and cloning", link: "https://elevenlabs.io/", icon: "fa-microphone" },
+            { name: "Uberduck", description: "AI voice synthesis and rap generator", link: "https://uberduck.ai/", icon: "fa-duck" },
+            { name: "RunwayML", description: "AI tools for video and creative work", link: "https://runwayml.com/", icon: "fa-film" },
+            { name: "Pika Labs", description: "AI video generation", link: "https://pika.art/", icon: "fa-video" },
+            { name: "Claude AI", description: "Anthropic's AI assistant (coding & analysis)", link: "https://www.anthropic.com/", icon: "fa-brain" },
+            { name: "Phind", description: "AI search engine for developers", link: "https://www.phind.com/", icon: "fa-search" },
+            { name: "Tabnine", description: "AI code completion", link: "https://www.tabnine.com/", icon: "fa-keyboard" },
+            { name: "Amazon CodeWhisperer", description: "AI coding companion by AWS", link: "https://aws.amazon.com/codewhisperer/", icon: "fa-aws" },
+            { name: "Replit Ghostwriter", description: "AI code helper in Replit", link: "https://replit.com/ai", icon: "fa-ghost" },
+        ];
+
+        const audioToolsData = [
+            { name: "Audacity", description: "Free open-source audio editor", link: "https://www.audacityteam.org/", icon: "fa-volume-up" },
+            { name: "LMMS", description: "Free digital audio workstation", link: "https://lmms.io/", icon: "fa-sliders-h" },
+            { name: "FL Studio", description: "Professional music production software", link: "https://www.image-line.com/", icon: "fa-music" },
+            { name: "Ableton Live", description: "DAW for music creation and performance", link: "https://www.ableton.com/", icon: "fa-compact-disc" },
+            { name: "Reaper", description: "Affordable professional DAW", link: "https://www.reaper.fm/", icon: "fa-wave-square" },
+            { name: "GarageBand", description: "Free DAW for Mac/iOS", link: "https://www.apple.com/mac/garageband/", icon: "fa-apple" },
+            { name: "Bfxr", description: "Quick retro sound effect generator", link: "https://www.bfxr.net/", icon: "fa-bolt" },
+            { name: "ChipTone", description: "8-bit sound effect generator", link: "https://sfbgames.itch.io/chiptone", icon: "fa-gamepad" },
+            { name: "FMOD", description: "Game audio middleware", link: "https://www.fmod.com/", icon: "fa-broadcast-tower" },
+            { name: "Wwise", description: "Professional audio middleware", link: "https://www.audiokinetic.com/", icon: "fa-signal" },
+            { name: "Ardour", description: "Open-source DAW", link: "https://ardour.org/", icon: "fa-record-vinyl" },
+            { name: "Tracktion", description: "Free DAW (Waveform Free)", link: "https://www.tracktion.com/", icon: "fa-headphones" },
+            { name: "Cakewalk", description: "Free professional DAW", link: "https://www.bandlab.com/products/cakewalk", icon: "fa-microphone-alt" },
+            { name: "Bosca Ceoil", description: "Easy music creation tool", link: "https://boscaceoil.net/", icon: "fa-drum" },
+            { name: "FamiTracker", description: "NES/Famicom music tracker", link: "http://famitracker.com/", icon: "fa-gamepad" },
+            { name: "Beepbox", description: "Online chiptune maker", link: "https://www.beepbox.co/", icon: "fa-plus-square" },
+            { name: "Freesound", description: "Collaborative sound database", link: "https://freesound.org/", icon: "fa-folder-open" },
+            { name: "Incompetech Music", description: "Royalty-free music", link: "https://incompetech.com/", icon: "fa-music" },
+            { name: "Purple Planet Music", description: "Free music for creators", link: "https://www.purple-planet.com/", icon: "fa-planet" },
+            { name: "Zapsplat", description: "Free sound effects", link: "https://www.zapsplat.com/", icon: "fa-zap" },
+        ];
+
+        const learningData = [
+            // YOUTUBE CHANNELS
+            { name: "GDQuest", description: "Godot tutorials and courses", category: "youtube", link: "https://www.youtube.com/@GDQuest", icon: "fa-youtube" },
+            { name: "HeartBeast", description: "Godot game development tutorials", category: "youtube", link: "https://www.youtube.com/@uheartbeast", icon: "fa-youtube" },
+            { name: "Brackeys", description: "Unity tutorials (channel archived but valuable)", category: "youtube", link: "https://www.youtube.com/@Brackeys", icon: "fa-youtube" },
+            { name: "Code Monkey", description: "Unity C# tutorials", category: "youtube", link: "https://www.youtube.com/@CodeMonkeyUnity", icon: "fa-youtube" },
+            { name: "Dani", description: "Game dev entertainment and inspiration", category: "youtube", link: "https://www.youtube.com/@DaniDev", icon: "fa-youtube" },
+            { name: "Sebastian Lague", description: "Advanced game dev concepts", category: "youtube", link: "https://www.youtube.com/@SebastianLague", icon: "fa-youtube" },
+            { name: "Mix and Jam", description: "Recreating game mechanics", category: "youtube", link: "https://www.youtube.com/@mixandjam", icon: "fa-youtube" },
+            { name: "Blackthornprod", description: "Game art and development", category: "youtube", link: "https://www.youtube.com/@Blackthornprod", icon: "fa-youtube" },
+            { name: "Thomas Brush", description: "Indie game dev and marketing", category: "youtube", link: "https://www.youtube.com/@thomasbrush", icon: "fa-youtube" },
+            { name: "Game Maker's Toolkit", description: "Game design analysis", category: "youtube", link: "https://www.youtube.com/@GMTK", icon: "fa-youtube" },
+            { name: "Jonas Tyroller", description: "Game design and devlogs", category: "youtube", link: "https://www.youtube.com/@JonasTyroller", icon: "fa-youtube" },
+            { name: "Pontypants", description: "Godot tutorials", category: "youtube", link: "https://www.youtube.com/@Pontypants", icon: "fa-youtube" },
+            { name: "Garbaj", description: "Godot 3D tutorials", category: "youtube", link: "https://www.youtube.com/@Garbaj", icon: "fa-youtube" },
+            
+            // DOCUMENTATION
+            { name: "Godot Docs", description: "Official Godot documentation", category: "docs", link: "https://docs.godotengine.org/", icon: "fa-book" },
+            { name: "Unity Manual", description: "Official Unity documentation", category: "docs", link: "https://docs.unity3d.com/Manual/", icon: "fa-book" },
+            { name: "Unreal Docs", description: "Unreal Engine documentation", category: "docs", link: "https://docs.unrealengine.com/", icon: "fa-book" },
+            { name: "GDScript Reference", description: "GDScript language reference", category: "docs", link: "https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/", icon: "fa-file-code" },
+            { name: "Godot Q&A", description: "Community Q&A for Godot", category: "docs", link: "https://godotengine.org/qa/", icon: "fa-question-circle" },
+            
+            // COURSES
+            { name: "Udemy Game Dev", description: "Various game development courses", category: "courses", link: "https://www.udemy.com/topic/game-development/", icon: "fa-graduation-cap" },
+            { name: "Coursera Game Design", description: "Game design specializations", category: "courses", link: "https://www.coursera.org/courses?query=game%20design", icon: "fa-university" },
+            { name: "GDQuest Learn", description: "Godot courses and tutorials", category: "courses", link: "https://www.gdquest.com/", icon: "fa-chalkboard-teacher" },
+            { name: "GameDev.tv", description: "Complete game dev courses", category: "courses", link: "https://www.gamedev.tv/", icon: "fa-tv" },
+            { name: "Zenva Academy", description: "Game programming courses", category: "courses", link: "https://academy.zenva.com/", icon: "fa-laptop-code" },
+            
+            // DISCORD SERVERS
+            { name: "Godot Engine", description: "Official Godot Discord", category: "discord", link: "https://discord.gg/godotengine", icon: "fa-discord" },
+            { name: "Game Dev League", description: "Indie game dev community", category: "discord", link: "https://discord.gg/gamedev", icon: "fa-discord" },
+            { name: "Game Dev Network", description: "Large game dev community", category: "discord", link: "https://discord.gg/gdn", icon: "fa-discord" },
+            
+            // OPEN SOURCE GAMES
+            { name: "Godot Demo Projects", description: "Official Godot demo projects", category: "opensource", link: "https://github.com/godotengine/godot-demo-projects", icon: "fa-github" },
+            { name: "Awesome Godot", description: "Curated list of Godot resources", category: "opensource", link: "https://github.com/godotengine/awesome-godot", icon: "fa-github" },
+            { name: "Open Source Games", description: "List of open source games", category: "opensource", link: "https://github.com/leereilly/games", icon: "fa-github" },
+        ];
+
+        const problemsData = [
+            {
+                title: "Collision Detection Not Working",
+                problem: "العناصر تمر عبر بعضها والتصادم لا يعمل",
+                cause: "Wrong collision layers or missing collision shapes",
+                solution: "1. تأكد من وجود CollisionShape2D/3D\n2. تحقق من Collision Layers و Masks\n3. استخدم الدالة set_collision_mask_value()\n4. تأكد من أن الأجسام في نفس الطبقة الفيزيائية",
+                code: `# Set collision layer
+set_collision_layer_value(1, true)
+# Set collision mask  
+set_collision_mask_value(2, true)`
+            },
+            {
+                title: "Low FPS / Performance Issues",
+                problem: "الإطارات منخفضة واللعبة بطيئة",
+                cause: "Too many draw calls, heavy scripts, or no optimization",
+                solution: "1. استخدم Object Pooling\n2. قلل من Draw Calls\n3. استخدم Occlusion Culling\n4. قلل Shadows و Light sources\n5. استخدم TileMap بدل Sprites المتعددة",
+                code: `# Enable MultiThreading
+ProjectSettings.set_setting("rendering/threads/thread_model", 2)
+
+# Use VisibilityNotifier
+func _on_visible_on_screen():
+    set_process(true)
+func _on_hidden():
+    set_process(false)`
+            },
+            {
+                title: "Export/Build Not Working",
+                problem: "تصدير اللعبة يفشل أو لا يعمل",
+                cause: "Missing export templates or wrong settings",
+                solution: "1. تثبيت Export Templates من Editor > Manage Export Templates\n2. تحقق من Project Settings > Export\n3. تأكد من اختيار الـ Platform الصحيح\n4. تحقق من أذونات الملفات",
+                code: `# In terminal, download templates:
+# Godot will prompt to download automatically`
+            },
+            {
+                title: "Input Not Responding",
+                problem: "المدخلات (WASD, Space) لا تعمل",
+                cause: "Input map not configured or wrong event",
+                solution: "1. اذهب إلى Project > Project Settings > Input Map\n2. أضف Actions جديدة (ui_left, ui_right, etc.)\n3. استخدم Input.is_action_pressed() بدلاً من Input.is_key_pressed()\n4. تحقق من أن Node يملك focus",
+                code: `# Correct way:
+if Input.is_action_pressed("ui_right"):
+    move_right()
+
+# Wrong way (don't use):
+# if Input.is_key_pressed(KEY_D):`
+            },
+            {
+                title: "Memory Leaks",
+                problem: "الذاكرة تزيد باستمرار",
+                cause: "Not freeing nodes or disconnecting signals",
+                solution: "1. استخدم queue_free() بدلاً من free()\n2. افصل Signals قبل حذف Node\n3. لا تحفظ مراجع لـ Nodes محذوفة\n4. استخدم Object Pooling",
+                code: `# Free node properly
+node.queue_free()
+
+# Disconnect signal
+if signal_name.is_connected(callable):
+    signal_name.disconnect(callable)`
+            },
+            {
+                title: "Tilemap Issues",
+                problem: "Tilemap has gaps or wrong alignment",
+                cause: "Wrong tile size or filter settings",
+                solution: "1. تأكد من أن Tile Size يطابق حجم الصورة\n2. غير Filter إلى Nearest في Import settings\n3. استخدم أحجام قوى 2 (32x32, 64x64)\n4. تأكد من Pixel Snap في Project Settings",
+                code: `# In Project Settings:
+rendering/2d/snapping/use_gpu_pixel_snap = true`
+            },
+            {
+                title: "Animation Not Playing",
+                problem: "الأنيميشن لا تعمل أو تظهر",
+                cause: "AnimationPlayer not set up correctly",
+                solution: "1. تحقق من أن AnimationPlayer مضاف\n2. تأكد من وجود Tracks في Animation\n3. استخدم play() function\n4. تحقق من Autoplay setting",
+                code: `# Play animation
+$AnimationPlayer.play("walk")
+
+# Check if playing
+if $AnimationPlayer.is_playing():
+    print("Animation is running")`
+            },
+            {
+                title: "Audio Not Playing",
+                problem: "الصوت لا يشتغل",
+                cause: "AudioStreamPlayer not configured or muted",
+                solution: "1. تحقق من وجود AudioStream\n2. تأكد من أن Volume أكبر من 0\n3. استخدم play() function\n4. تحقق من Audio Bus",
+                code: `# Play sound
+$AudioStreamPlayer.play()
+
+# Set volume (in dB)
+$AudioStreamPlayer.volume_db = -10`
+            },
+            {
+                title: "Scene Instantiation Errors",
+                problem: "خطأ عند إنشاء scene جديد",
+                cause: "Wrong path or scene not saved",
+                solution: "1. تأكد من حفظ الـ Scene\n2. استخدم preload() للمسارات الثابتة\n3. تحقق من المسار الصحيح\n4. استخدم res:// للمسارات",
+                code: `# Correct instantiation
+var scene = preload("res://scenes/enemy.tscn")
+var instance = scene.instantiate()
+add_child(instance)`
+            },
+            {
+                title: "Signals Not Emitting",
+                problem: "Signal لا يرسل أو لا يستقبل",
+                cause: "Signal not connected or wrong parameters",
+                solution: "1. تحقق من Connection في Node\n2. استخدم connect() في _ready()\n3. تأكد من Parameters الصحيحة\n4. استخدم emit() بشكل صحيح",
+                code: `# Define signal
+signal health_changed(new_health)
+
+# Connect signal
+health_changed.connect(_on_health_changed)
+
+# Emit signal
+health_changed.emit(50)
+
+# Handler function
+func _on_health_changed(new_health):
+    print("Health: ", new_health)`
+            }
+        ];
+
+        // ==================== COUNTDOWN TIMER ====================
+        let countdownDate = new Date().getTime() + (48 * 60 * 60 * 1000); // Default 48 hours
+        
+        // Load saved countdown from localStorage
+        if (localStorage.getItem('countdownDate')) {
+            countdownDate = parseInt(localStorage.getItem('countdownDate'));
+        }
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = countdownDate - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById('days').textContent = String(days).padStart(2, '0');
+            document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+            document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+
+            if (distance < 0) {
+                document.getElementById('days').textContent = '00';
+                document.getElementById('hours').textContent = '00';
+                document.getElementById('minutes').textContent = '00';
+                document.getElementById('seconds').textContent = '00';
+            }
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        function setCustomTimer() {
+            const hours = prompt('كم ساعة متبقية؟ / How many hours remaining?', '48');
+            if (hours && !isNaN(hours)) {
+                countdownDate = new Date().getTime() + (parseInt(hours) * 60 * 60 * 1000);
+                localStorage.setItem('countdownDate', countdownDate);
+                updateCountdown();
+                showToast('Timer updated! ⏰');
+            }
+        }
+
+        // ==================== THEME TOGGLE ====================
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        html.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+            showToast(newTheme === 'dark' ? '🌙 Dark Mode' : '☀️ Light Mode');
+        });
+
+        function updateThemeIcon(theme) {
+            const icon = themeToggle.querySelector('i');
+            icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        // ==================== SIDEBAR TOGGLE ====================
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+        });
+
+        // Close sidebar when clicking nav item on mobile
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove('open');
+                }
+            });
+        });
+
+        // ==================== SMOOTH SCROLL ====================
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    
+                    // Update active nav item
+                    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                }
+            });
+        });
+
+        // ==================== SCROLL TO TOP ====================
+        const scrollTopBtn = document.getElementById('scrollTop');
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                scrollTopBtn.classList.add('show');
+            } else {
+                scrollTopBtn.classList.remove('show');
+            }
+        });
+
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // ==================== TOAST NOTIFICATION ====================
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // ==================== RENDER TOOLS ====================
+        function renderTools(filter = 'all') {
+            const grid = document.getElementById('toolsGrid');
+            const filteredTools = filter === 'all' ? toolsData : toolsData.filter(t => t.category === filter);
+            
+            grid.innerHTML = filteredTools.map(tool => `
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">${tool.name}</h3>
+                        <div class="card-icon">
+                            <i class="fas ${tool.icon}"></i>
+                        </div>
+                    </div>
+                    <div class="card-description">${tool.description}</div>
+                    <div class="card-tags">
+                        <span class="tag">${tool.category}</span>
+                    </div>
+                    <div class="card-actions">
+                        <a href="${tool.link}" target="_blank" class="btn btn-primary">
+                            <i class="fas fa-external-link-alt"></i>
+                            Visit
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ==================== RENDER GDSCRIPT CODES ====================
+        function renderGDScriptCodes(filter = 'all') {
+            const container = document.getElementById('gdscriptCodes');
+            const filteredCodes = filter === 'all' ? gdscriptData : gdscriptData.filter(c => c.category === filter);
+            
+            container.innerHTML = filteredCodes.map((code, index) => `
+                <div class="code-card">
+                    <div class="code-header">
+                        <div>
+                            <h3 class="code-title">${code.title}</h3>
+                            <p style="color: var(--text-secondary); margin-top: 0.5rem;">${code.description}</p>
+                            <div class="card-tags" style="margin-top: 0.5rem;">
+                                <span class="tag">${code.category}</span>
+                            </div>
+                        </div>
+                        <button class="copy-btn" onclick="copyCode(${index})">
+                            <i class="fas fa-copy"></i>
+                            Copy
+                        </button>
+                    </div>
+                    <div class="code-block">
+                        <pre><code id="code-${index}">${code.code}</code></pre>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function copyCode(index) {
+            const codeElement = document.getElementById(`code-${index}`);
+            const text = codeElement.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('✅ Code copied to clipboard!');
+            });
+        }
+
+        // ==================== RENDER ASSETS ====================
+        function renderAssets(filter = 'all') {
+            const grid = document.getElementById('assetsGrid');
+            const filteredAssets = filter === 'all' ? assetsData : assetsData.filter(a => a.category === filter);
+            
+            grid.innerHTML = filteredAssets.map(asset => `
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">${asset.name}</h3>
+                        <div class="card-icon" style="background: var(--secondary-gradient);">
+                            <i class="fas ${asset.icon}"></i>
+                        </div>
+                    </div>
+                    <div class="card-description">${asset.description}</div>
+                    <div class="card-tags">
+                        <span class="tag">${asset.category}</span>
+                    </div>
+                    <div class="card-actions">
+                        <a href="${asset.link}" target="_blank" class="btn btn-primary">
+                            <i class="fas fa-download"></i>
+                            Get Assets
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ==================== RENDER AI TOOLS ====================
+        function renderAITools() {
+            const grid = document.getElementById('aiGrid');
+            grid.innerHTML = aiToolsData.map(tool => `
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">${tool.name}</h3>
+                        <div class="card-icon" style="background: var(--success-gradient);">
+                            <i class="fas ${tool.icon}"></i>
+                        </div>
+                    </div>
+                    <div class="card-description">${tool.description}</div>
+                    <div class="card-actions">
+                        <a href="${tool.link}" target="_blank" class="btn btn-primary">
+                            <i class="fas fa-robot"></i>
+                            Try Now
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ==================== RENDER AUDIO TOOLS ====================
+        function renderAudioTools() {
+            const grid = document.getElementById('audioGrid');
+            grid.innerHTML = audioToolsData.map(tool => `
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">${tool.name}</h3>
+                        <div class="card-icon" style="background: var(--accent-gradient);">
+                            <i class="fas ${tool.icon}"></i>
+                        </div>
+                    </div>
+                    <div class="card-description">${tool.description}</div>
+                    <div class="card-actions">
+                        <a href="${tool.link}" target="_blank" class="btn btn-primary">
+                            <i class="fas fa-music"></i>
+                            Open
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ==================== RENDER LEARNING RESOURCES ====================
+        function renderLearning(filter = 'all') {
+            const grid = document.getElementById('learningGrid');
+            const filteredLearning = filter === 'all' ? learningData : learningData.filter(l => l.category === filter);
+            
+            grid.innerHTML = filteredLearning.map(resource => `
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">${resource.name}</h3>
+                        <div class="card-icon" style="background: var(--primary-gradient);">
+                            <i class="fas ${resource.icon}"></i>
+                        </div>
+                    </div>
+                    <div class="card-description">${resource.description}</div>
+                    <div class="card-tags">
+                        <span class="tag">${resource.category}</span>
+                    </div>
+                    <div class="card-actions">
+                        <a href="${resource.link}" target="_blank" class="btn btn-primary">
+                            <i class="fas fa-external-link-alt"></i>
+                            Learn
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ==================== RENDER PROBLEMS ====================
+        function renderProblems() {
+            const container = document.getElementById('problemsGrid');
+            container.innerHTML = problemsData.map(problem => `
+                <div class="code-card">
+                    <div class="code-header">
+                        <div>
+                            <h3 class="code-title">${problem.title}</h3>
+                            <p style="color: var(--text-secondary); margin: 0.5rem 0;" class="arabic-text">
+                                <strong>المشكلة:</strong> ${problem.problem}
+                            </p>
+                            <p style="color: var(--text-muted); margin: 0.5rem 0;">
+                                <strong>Cause:</strong> ${problem.cause}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="card-description" style="margin: 1rem 0; white-space: pre-line;">
+                        <strong style="color: var(--text-primary);">الحل / Solution:</strong><br>
+                        ${problem.solution}
+                    </div>
+                    ${problem.code ? `<div class="code-block"><pre><code>${problem.code}</code></pre></div>` : ''}
+                </div>
+            `).join('');
+        }
+
+        // ==================== FILTER BUTTONS ====================
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove active from siblings
+                this.parentElement.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                // Get category
+                const category = this.dataset.category || this.dataset.codeCategory || 
+                               this.dataset.assetCategory || this.dataset.learningCategory;
+                
+                // Render based on section
+                if (this.dataset.category) renderTools(category);
+                if (this.dataset.codeCategory) renderGDScriptCodes(category);
+                if (this.dataset.assetCategory) renderAssets(category);
+                if (this.dataset.learningCategory) renderLearning(category);
+            });
+        });
+
+        // ==================== SEARCH ====================
+        const searchInput = document.getElementById('searchInput');
+        let searchTimeout;
+
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                const query = e.target.value.toLowerCase();
+                if (query.length < 2) return;
+
+                // Search in tools
+                const toolResults = toolsData.filter(t => 
+                    t.name.toLowerCase().includes(query) || 
+                    t.description.toLowerCase().includes(query)
+                );
+
+                // Search in codes
+                const codeResults = gdscriptData.filter(c => 
+                    c.title.toLowerCase().includes(query) || 
+                    c.description.toLowerCase().includes(query)
+                );
+
+                // Search in assets
+                const assetResults = assetsData.filter(a => 
+                    a.name.toLowerCase().includes(query) || 
+                    a.description.toLowerCase().includes(query)
+                );
+
+                console.log('Search results:', {
+                    tools: toolResults.length,
+                    codes: codeResults.length,
+                    assets: assetResults.length
+                });
+
+                showToast(`Found ${toolResults.length + codeResults.length + assetResults.length} results 🔍`);
+            }, 500);
+        });
+
+        // ==================== INITIALIZE ====================
+        window.addEventListener('DOMContentLoaded', () => {
+            renderTools();
+            renderGDScriptCodes();
+            renderAssets();
+            renderAITools();
+            renderAudioTools();
+            renderLearning();
+            renderProblems();
+
+            // Update stats
+            document.getElementById('toolsCount').textContent = toolsData.length + '+';
+            document.getElementById('codesCount').textContent = gdscriptData.length + '+';
+            document.getElementById('assetsCount').textContent = assetsData.length + '+';
+            document.getElementById('learningCount').textContent = learningData.length + '+';
+        });
+
+    </script>
+
+</body>
+</html>
